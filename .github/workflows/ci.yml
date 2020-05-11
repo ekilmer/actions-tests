@@ -47,6 +47,7 @@ jobs:
     - name: Allow-failure
       if: matrix.python-version == '3.9'
       run: |
+        set +o e
         allow=$(python --ssss)
         if [ ${allow} -ne 0 ]; then
           echo "::warning allowed-failure"
