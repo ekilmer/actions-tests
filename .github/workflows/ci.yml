@@ -10,24 +10,44 @@ on:
   pull_request:
     branches: [ master ]
 
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  tests:
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    strategy:
+      matrix:
+        python-version: ['3.6', '3.7', '3.8', '3.9']
+
+    name: Python ${{ matrix.python-version }}
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
+    - name: Install Python 3.9
+      if: matrix.python-version == '3.9'
+      run: |
+        sudo add-apt-repository ppa:deadsnakes/ppa
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends python3.9-dev python3.9-distutils python3.9-venv
+        python3.9 -m pip install --upgrade pip setuptools
+        python3.9 -m venv $HOME/venv-python3.9
+        echo "::set-env name=VIRTUAL_ENV::$HOME/venv-python3.9"
+        echo "::add-path::$HOME/venv-python3.9/bin"
+    - uses: actions/setup-python@v1
+      if: matrix.python-version != '3.9'
+      with:
+        python-version: ${{ matrix.python-version }}
+        architecture: x64
 
     # Runs a single command using the runners shell
-    - name: Run a one-line script
-      run: echo Hello, world!
+    - name: Python version
+      run: python --version
 
     # Runs a set of commands using the runners shell
-    - name: Run a multi-line script
+    - name: Allow-failure
+      if: matrix.python-version == '3.9'
       run: |
-        echo Add other actions to build,
-        echo test, and deploy your project.
+        allow=$(python --ssss)
+        if [ ${allow} -ne 0 ]; then
+          echo "::warning allowed-failure"
+        fi
