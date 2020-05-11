@@ -52,5 +52,5 @@ jobs:
         python --ssss
         allow=$?
         if [ $allow -ne 0 ]; then
-          echo "::warning file=python-${{ matrix.python-version }},line=0,col=0::allowed-failure"
+          echo "::warning ::python-${{ matrix.python-version }} allowed-failure"
         fi
