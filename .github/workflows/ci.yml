@@ -6,51 +6,15 @@ name: CI
 # events but only for the master branch
 on:
   push:
-    branches: [ master ]
   pull_request:
-    branches: [ master ]
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   tests:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        python-version: ['3.6', '3.7', '3.8', '3.9']
+    runs-on: windows-2019
 
     name: Python ${{ matrix.python-version }}
     steps:
-    - uses: actions/checkout@v2
-    - name: Install Python 3.9
-      if: matrix.python-version == '3.9'
-      run: |
-        sudo add-apt-repository ppa:deadsnakes/ppa
-        sudo apt-get update
-        sudo apt-get install -y --no-install-recommends python3.9-dev python3.9-distutils python3.9-venv
-        python3.9 -m pip install --upgrade pip setuptools
-        python3.9 -m venv $HOME/venv-python3.9
-        echo "::set-env name=VIRTUAL_ENV::$HOME/venv-python3.9"
-        echo "::add-path::$HOME/venv-python3.9/bin"
-    - uses: actions/setup-python@v1
-      if: matrix.python-version != '3.9'
-      with:
-        python-version: ${{ matrix.python-version }}
-        architecture: x64
-
-    # Runs a single command using the runners shell
-    - name: Python version
-      run: python --version
-
-    # Runs a set of commands using the runners shell
-    - name: Allow-failure
-      if: matrix.python-version == '3.9'
-      run: |
-        set +o errexit
-
-        python --ssss
-        allow=$?
-        if [ $allow -ne 0 ]; then
-          echo "::warning ::python-${{ matrix.python-version }} allowed-failure"
-        fi
+    - name: Space Check
+      run: Get-PSDrive
