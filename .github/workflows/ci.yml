@@ -14,7 +14,7 @@ jobs:
   tests:
     runs-on: windows-2019
 
-    name: Python ${{ matrix.python-version }}
+    name: Test
     steps:
     - name: Space Check
       run: Get-PSDrive
