@@ -24,7 +24,9 @@ jobs:
       id: required-step
       env:
         JOB_CONTEXT: ${{ toJSON(job) }}
-      run: echo "$JOB_CONTEXT"
+      run: |
+        echo "$JOB_CONTEXT"
+        exit 1
     - name: Report neutral
       run: exit 1
     - name: Run something
