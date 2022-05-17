@@ -30,4 +30,4 @@ jobs:
         exit 1
     - name: Allow Failures
       if: ${{ steps.allow-fail-step-1.outcome == 'failure' }}
-      run: echo "${{ runner.os }} allowed failure" >> $GITHUB_STEP_SUMMARY
+      run: echo "# Testing Title\n${{ runner.os }} allowed failure" >> $GITHUB_STEP_SUMMARY
