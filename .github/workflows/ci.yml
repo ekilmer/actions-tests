@@ -21,11 +21,12 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: echo "$GITHUB_CONTEXT"
     - name: Dump job context
+      id: required-step
       env:
         JOB_CONTEXT: ${{ toJSON(job) }}
       run: echo "$JOB_CONTEXT"
     - name: Report neutral
       run: exit 1
     - name: Run something
-      if: ${{ always() }}
+      if: ${{ always() && steps.required-step.outcome == 'success' }}
       run: echo "Hello"
