@@ -25,19 +25,7 @@ jobs:
         JOB_CONTEXT: ${{ toJSON(job) }}
       run: echo "$JOB_CONTEXT"
     - name: Report neutral
-      shell: bash
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        curl -s -H "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID} | jq -r '.check_suite_url'
-        echo ""
-        CHECK_SUITE_URL="$(curl -s -H "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID} | jq -r '.check_suite_url')"
-        echo "CHECK_SUITE_URL: ${CHECK_SUITE_URL}"
-        echo ""
-        curl -s -H "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/vnd.github.v3+json" "$CHECK_SUITE_URL/check-runs" | jq '.check_runs[] | select(.name=="Test Neutral") | .id '
-        echo ""
-        CHECK_RUN_ID=$(curl -s -H "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/vnd.github.v3+json" "$CHECK_SUITE_URL/check-runs" | jq '.check_runs[] | select(.name=="Test Neutral") | .id ')
-        echo "CHECK_RUN_ID: ${CHECK_RUN_ID}"
-        echo ""
-        #gh api -H "Accept: application/vnd.github.v3+json" /repos/${{ github.repository }}/check-runs -f name="Test Neutral" -f head_sha="${{ github.sha }}" -f conclusion="neutral"
-        gh api --method PATCH -H "Accept: application/vnd.github.v3+json" /repos/${{ github.repository }}/check-runs/${CHECK_RUN_ID} -f conclusion="neutral" -f name="test test"
+      continue-on-error: true
+      run: exit 1
+    - name: Run something
+      run: echo "Hello"
