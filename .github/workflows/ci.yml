@@ -21,13 +21,13 @@ jobs:
         GITHUB_CONTEXT: ${{ toJSON(github) }}
       run: echo "$GITHUB_CONTEXT"
     - name: Dump job context
-      id: required-step
+      id: allow-fail-step-1
+      continue-on-error: true
       env:
         JOB_CONTEXT: ${{ toJSON(job) }}
       run: |
         echo "$JOB_CONTEXT"
-    - name: Report neutral
-      run: exit 1
-    - name: Run something
-      if: ${{ steps.required-step.outcome == 'success' }}
-      run: echo "Hello"
+        exit 1
+    - name: Allow Failures
+      if: ${{ steps.allow-fail-step-1.outcome == 'failure' }}
+      run: echo "${{ runner.os }} allowed failure" >> $GITHUB_STEP_SUMMARY
